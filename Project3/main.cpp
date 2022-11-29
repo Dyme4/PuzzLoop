@@ -570,8 +570,8 @@ void inGameIdleFunc() {
 
 		if (loop.getSphereVector().size() == 2 && stage == 1) {
 			stage = 2;
-			loop.createLoop(2);
 			Sleep(300);
+			loop.createLoop(2);
 			playing_start_t = clock();
 			PlaySound(TEXT("source/sound/stageAdvance.wav"), NULL, SND_FILENAME | SND_ASYNC);//SND_ASYNC: 재생하는동안 프로그렘 실행, SND_SYNC :재생하는 동안 프로그렘 정지
 		}

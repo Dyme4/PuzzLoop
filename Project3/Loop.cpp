@@ -34,12 +34,14 @@ void Loop::createLoop(int stage) {
 		loopPoints.clear();
 		sphereOnLoop.clear();
 		score = 0;
+		pullHandling = false;
 		return;
 	}
 
 	else if (stage == 1) {
 		loopPoints.clear();
 		sphereOnLoop.clear();
+		pullHandling = false;
 
 		numOfSphere = 13 * difficulty; //가상공 포함, 적정 13
 
@@ -59,6 +61,7 @@ void Loop::createLoop(int stage) {
 	else if (stage == 2) {
 		loopPoints.clear();
 		sphereOnLoop.clear();
+		pullHandling = false;
 
 		numOfSphere = 20 * difficulty; //가상공 포함, 적정 20
 
@@ -79,6 +82,7 @@ void Loop::createLoop(int stage) {
 	else if (stage == 3) {
 		loopPoints.clear();
 		sphereOnLoop.clear();
+		pullHandling = false;
 
 		numOfSphere = 11 * difficulty; //적정 11
 
@@ -95,6 +99,7 @@ void Loop::createLoop(int stage) {
 	else if (stage == 4) { //3스테이지에서 3,4 모두 실행
 		loopPoints.clear();
 		sphereOnLoop.clear();
+		pullHandling = false;
 
 		numOfSphere = 11 * difficulty; //적정 11
 
@@ -153,7 +158,7 @@ void Loop::createLoop(int stage) {
 		s.setSlice(30);
 		s.setStack(30);
 		s.setLoopPointIdx(2 * radius * (numOfSphere - i));
-		s.setCenter(loopPoints[0]);
+		s.setCenter(loopPoints[s.getLoopPointIdx()]);
 
 		if (i == 0 || i == numOfSphere - 1) { //맨 앞뒤 투명 맽 설정
 			s.setColorIdx(999);
@@ -242,7 +247,7 @@ void Loop::moveSphere() {
 					sphereOnLoop[idx].setChainHandling(false);
 				
 			}
-			else {
+			else if (sphereOnLoop.size() > 2) {
 				int currLoopPtIdx = sphereOnLoop[idx].getLoopPointIdx();
 				int newLoopPtIdx = currLoopPtIdx + 1;
 				sphereOnLoop[idx].setLoopPointIdx(newLoopPtIdx);
@@ -340,7 +345,7 @@ Vector3f Loop::getVerticalBetween(const Sphere& s1, const Sphere& s2, float move
 void Loop::draw() const {
 	// draw sphere
 	glEnable(GL_LIGHTING);
-	for (int i = 1; i < sphereOnLoop.size() - 1 && !sphereOnLoop.empty(); ++i) { //맨 앞 뒤는 그리지 않음
+	for (int i = 1; i < sphereOnLoop.size()-1  && !sphereOnLoop.empty(); ++i) { //맨 앞 뒤는 그리지 않음
 		sphereOnLoop[i].draw();
 	}
 		

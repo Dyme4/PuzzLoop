@@ -1,33 +1,16 @@
-﻿  Canon.cpp
-  Light.cpp
-  Loop.cpp
+﻿  Loop.cpp
 C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Sound.h(3,10): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
 C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Sound.h(5,10): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
 C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(19,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(179,25): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(250,22): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(303,24): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(343,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(354,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(358,42): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-  main.cpp
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Sound.h(3,10): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Sound.h(5,10): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\include\FreeImage.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\main.cpp(44,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\main.cpp(66,19): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\main.cpp(89,22): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-  Material.cpp
-  Sound.cpp
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Sound.h(3,10): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Sound.h(5,10): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
-  Sphere.cpp
-  Texture.cpp
-C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\include\FreeImage.h(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
-  Vector3f.cpp
-  Vector4f.cpp
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(184,25): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(255,22): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(308,24): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(348,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(359,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(363,42): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
   코드를 생성하고 있습니다.
-  Previous IPDB not found, fall back to full compilation.
-  All 810 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  2 of 810 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    4 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   Project3.vcxproj -> C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Release\Project3.exe
