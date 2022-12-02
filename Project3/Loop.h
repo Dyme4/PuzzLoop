@@ -27,6 +27,7 @@ public:
 	void addScore(int s);
 
 	bool getPullHandling() const;
+	float getFadeout() const;
 
 	void draw() const;
 

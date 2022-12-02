@@ -25,6 +25,7 @@ vector<int> Loop::getColorIndexes() const {
 }
 
 bool Loop::getPullHandling() const { return pullHandling; }
+float Loop::getFadeout() const { return fadeout; }
 void Loop::setDifficulty(float f) { difficulty = f; }
 
 void Loop::createLoop(int stage) {
@@ -199,7 +200,6 @@ void Loop::moveSphere() {
 						for (int i = 0; i < deleteSphereNum; i++) {//공 제거
 							deleteSphere(frontIdx);
 						}
-						cout << "deleted : " << deleteSphereNum << endl;
 						addScore(deleteSphereNum * 10);
 						pullHandling = true;//pull 시작
 					}
@@ -237,7 +237,6 @@ void Loop::moveSphere() {
 						fadeout = 1.0f;
 						for (int i = 0; i < deleteSphereNum; i++) //공 제거
 							deleteSphere(frontIdx);
-						cout << "deleted : " << deleteSphereNum << endl;
 						addScore(deleteSphereNum * 10);
 						pullHandling = true;//pull 시작
 						pullNum = -5;//공 하나 더 당겨야함
@@ -254,6 +253,7 @@ void Loop::moveSphere() {
 				sphereOnLoop[idx].setCenter(loopPoints[newLoopPtIdx]);
 				if (newLoopPtIdx >= loopPoints.size() - 25 && sphereOnLoop.size() > 2) {
 					setGameOver(true);
+					PlaySound(TEXT("source/sound/gameover.wav"), NULL, SND_FILENAME | SND_ASYNC);//SND_ASYNC: 재생하는동안 프로그렘 실행, SND_SYNC :재생하는 동안 프로그렘 정지
 				}
 			}
 		}

@@ -24,6 +24,7 @@
     <ClCompile Include="Loop.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="scoreboard.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="Loop.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="scoreboard.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Texture.h" />

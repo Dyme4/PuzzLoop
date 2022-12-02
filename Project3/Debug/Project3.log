@@ -1,0 +1,11 @@
+﻿  Loop.cpp
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Sound.h(3,10): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Sound.h(5,10): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(19,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(185,25): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(254,22): warning C4018: '>=': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(308,24): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(348,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(359,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Project3\Loop.cpp(363,42): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  Project3.vcxproj -> C:\Users\이한주\Desktop\프로그래밍방법론\Project3\Debug\Project3.exe

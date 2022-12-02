@@ -6,16 +6,18 @@
 #include "Light.h"
 #include "Canon.h"
 #include "Texture.h"
+#include "scoreboard.h"
 
-
+scoreboard sb;
 Loop loop, loop2;
 Light light(boundaryX, boundaryY, boundaryX / 2, GL_LIGHT0);
 Canon canon;
 Texture canonTexture;
 vector<Texture> menuTexture;
-Texture optionTexture, pauseTexture, pause_keyTexture, scoreboardTexture, allclearTexture;
+Texture optionTexture, pauseTexture, pause_keyTexture, scoreboardTexture, allclearTexture, gameoverTexture, namesaveTexture;
 int menuIdx=0;
 Sound sound;
+string playerName;
 
 clock_t playing_start_t = clock(); //게임 시작한 시점
 clock_t start_t = clock(); //1/60초마다 end_t로 초기화
@@ -27,6 +29,8 @@ bool gameStarted = false;
 bool optionBool = false; //false면 메인메뉴, true면 옵션메뉴
 bool scoreboardBool = false; //true면 스코어보드
 bool gamePaused = false;//true면 pause창이 켜진 상태
+bool gameOver = false;
+bool writeName = false;
 
 int stage = 1;//4스테이지는 클리어
 
@@ -64,7 +68,7 @@ bool isCollisionDetected(const Sphere& sph1, const Sphere& sph2) {
 }
 
 void handleCollision(Sphere& cannonSph, vector<Sphere>& loopSph) {
-	try {
+	if(!loop.getPullHandling() && loop.getFadeout() == 1.0f) try {
 		for (int i=1; i < loopSph.size()-1; ++i) { //맨 앞 뒤는 충돌 무시, 1~size()-2까지만
 			if (isCollisionDetected(cannonSph, loopSph[i])) {
 				
@@ -87,7 +91,7 @@ void handleCollision(Sphere& cannonSph, vector<Sphere>& loopSph) {
 }
 
 void handleCollision2(Sphere& cannonSph, vector<Sphere>& loopSph) {
-	try {
+	if (!loop2.getPullHandling() && loop2.getFadeout() == 1.0f)try {
 		for (int i = 1; (i < loopSph.size() - 1) && !loopSph.empty(); ++i) { //맨 앞 뒤는 충돌 무시, 1~size()-2까지만, loop2가 비어있지 않을때
 			if (isCollisionDetected(cannonSph, loopSph[i])) {
 
@@ -224,7 +228,35 @@ void specialKeyboardDown(int key, int x, int y) {
 }
 
 void keyboardDown(unsigned char key, int x, int y) {
-	if (gameStarted == false && optionBool == false && scoreboardBool == false) { //메인메뉴
+	if (writeName) {
+		playerName += key;
+		if (key == ' ') {
+			writeName = false;
+			cout << playerName << endl;
+			sb.write(playerName, loop.getScore() + loop2.getScore());
+			gameStarted = false;
+			gamePaused = false;
+			gameOver = false;
+			loop.createLoop(0);
+			loop2.createLoop(0);
+			PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
+		}
+		else if (key == 8 && playerName.size()>1) {
+			playerName.pop_back(); playerName.pop_back();
+		}
+	}
+	else if (gameOver) {
+		if (key == 'r' || key == 'R') {
+			gameStarted = false;
+			gamePaused = false;
+			gameOver = false;
+			loop.createLoop(0);
+			loop2.createLoop(0);
+			PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
+		}
+	}
+
+	else if (gameStarted == false && optionBool == false && scoreboardBool == false) { //메인메뉴
 		switch (key) {
 		case ' ':
 			switch (menu) {
@@ -232,6 +264,7 @@ void keyboardDown(unsigned char key, int x, int y) {
 				loop.createLoop(1); //1스테이지 생성
 				stage = 1;
 				playing_start_t = clock();
+				gameOver = false;
 				loop.setGameOver(false); loop2.setGameOver(false);
 				gameStarted = true;
 				PlaySound(TEXT("source/sound/collision.wav"), NULL, SND_FILENAME | SND_ASYNC);//SND_ASYNC: 재생하는동안 프로그렘 실행, SND_SYNC :재생하는 동안 프로그렘 정지
@@ -239,10 +272,12 @@ void keyboardDown(unsigned char key, int x, int y) {
 
 			case OPTION:
 				optionBool = true;
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 
 			case SCOREBOARD:
 				scoreboardBool = true;
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 
 			case EXIT:
@@ -257,29 +292,35 @@ void keyboardDown(unsigned char key, int x, int y) {
 			switch (optionmenu) {
 			case EASY: 
 				optionDifficultyPos[0] = -197.5f; optionDifficultyPos[1] = -12.f;
-				loop.setDifficulty(0.2f); loop2.setDifficulty(0.2f); //공 개수 0.75배
+				loop.setDifficulty(0.75f); loop2.setDifficulty(0.75f); //공 개수 0.75배
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 
 			case NORMAL:
 				optionDifficultyPos[0] = -197.5f; optionDifficultyPos[1] = -72.f;
 				loop.setDifficulty(1.f); loop2.setDifficulty(1.f); //공 개수 1배
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 
 			case HARD:
 				optionDifficultyPos[0] = -197.5f; optionDifficultyPos[1] = -132.f;
-				loop.setDifficulty(1.5f); loop2.setDifficulty(1.5f); //공 개수 1.5배
+				loop.setDifficulty(1.6f); loop2.setDifficulty(1.6f); //공 개수 1.6배
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 
 			case ON:
 				optionMusicPos[0] = 342.5f; optionMusicPos[1] = -30.f;
 				sound.playingBgm(true);
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 			case OFF:
 				optionMusicPos[0] = 342.5f; optionMusicPos[1] = -90.f;
 				sound.playingBgm(false);
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 			case BACK:
 				optionBool = false;
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 			default:
 				break;
@@ -290,6 +331,7 @@ void keyboardDown(unsigned char key, int x, int y) {
 		switch (key) {
 		case ' ':
 			scoreboardBool = false; //스코어보드 나가기
+			PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			break;
 		default:
 			break;
@@ -302,12 +344,15 @@ void keyboardDown(unsigned char key, int x, int y) {
 			{
 			case CONTINUE:
 				gamePaused = false;
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 			case MAINMENU:
+				gameOver = false;
 				gameStarted = false;
 				gamePaused = false;
 				loop.createLoop(0);
 				loop2.createLoop(0);
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 			}
 
@@ -328,12 +373,16 @@ void keyboardDown(unsigned char key, int x, int y) {
 			{
 			case clearMENU::WRITE:
 				//스코어보드 기록 시작
+				playerName.clear();
+				writeName = true;
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 			case clearMENU::MAINMENU:
 				gameStarted = false;
 				gamePaused = false;
 				loop.createLoop(0);
 				loop2.createLoop(0);
+				PlaySound(TEXT("source/sound/select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				break;
 			default:
 				break;
@@ -346,20 +395,20 @@ void keyboardDown(unsigned char key, int x, int y) {
 		int	add = 3;
 		switch (key) {
 		case 'q':
-			cout << "CCW" << endl;
+		
 			canon.adjustAngle(add);
 			canon.setCanonLoadCenter();
 			break;
 		case 'w':
-			cout << "CW" << endl;
+		
 			canon.adjustAngle(-add);
 			canon.setCanonLoadCenter();
 			break;
 		case ' ':
-			cout << "spacebar" << endl;
+			
 			if (!canon.isCanonFired()) {
 				sound.playingFireSfx();
-				cout << "Fired" << endl;
+
 				vector<int> colors1 = loop.getColorIndexes();
 				vector<int> colors2 = loop2.getColorIndexes();
 				colors1.insert(colors1.end(), colors2.begin(), colors2.end());
@@ -395,6 +444,8 @@ void initialize() {
 	pause_keyTexture.initializeTexture("source/pause_key.png");
 	scoreboardTexture.initializeTexture("source/scoreboard.png");
 	allclearTexture.initializeTexture("source/allclear.png");
+	gameoverTexture.initializeTexture("source/gameover.png");
+	namesaveTexture.initializeTexture("source/namesave.png");
 
 	menuTexture.reserve(299);
 	for (int i = 0; i < 299; ++i) {
@@ -445,6 +496,20 @@ void drawPause() {
 
 }
 
+void drawGameover() {
+	int imageWidth = 1200; int imageHeight = 800;
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glBindTexture(GL_TEXTURE_2D, gameoverTexture.getTextureID());
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex2f(-imageWidth / 2, -imageHeight / 2);
+	glTexCoord2f(0.0f, 1.0f); glVertex2f(-imageWidth / 2, imageHeight / 2);
+	glTexCoord2f(1.0f, 1.0f); glVertex2f(imageWidth / 2, imageHeight / 2);
+	glTexCoord2f(1.0f, 0.0f); glVertex2f(imageWidth / 2, -imageHeight / 2);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+}
+
 void drawAllclear() {
 	int imageWidth = 1200; int imageHeight = 800;
 	glEnable(GL_TEXTURE_2D);
@@ -477,7 +542,7 @@ void drawAllclear() {
 	glPopMatrix();
 
 
-	displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, "Total Score : " + std::to_string(loop.getScore() + loop2.getScore()), -40.f, 0.f);
+	displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, "Total Score : " + std::to_string(loop.getScore() + loop2.getScore()), -70.f, 0.f);
 }
 
 void drawMenu() {
@@ -507,6 +572,25 @@ void drawMenu() {
 	glPopMatrix();
 }
 
+void drawNamesave() {
+	int imageWidth = 1200; int imageHeight = 800;
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glBindTexture(GL_TEXTURE_2D, namesaveTexture.getTextureID());
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex2f(-imageWidth / 2, -imageHeight / 2);
+	glTexCoord2f(0.0f, 1.0f); glVertex2f(-imageWidth / 2, imageHeight / 2);
+	glTexCoord2f(1.0f, 1.0f); glVertex2f(imageWidth / 2, imageHeight / 2);
+	glTexCoord2f(1.0f, 0.0f); glVertex2f(imageWidth / 2, -imageHeight / 2);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+
+	glDisable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
+	glColor3f(1, 1, 1);
+	displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, playerName, -110.f, -90.f);
+}
+
 void drawScoreboard() {
 	int imageWidth = 1200; int imageHeight = 800;
 	glEnable(GL_TEXTURE_2D);
@@ -520,6 +604,9 @@ void drawScoreboard() {
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 
+	glDisable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
+
 	//커서
 	glPushMatrix();
 	glTranslatef(320, -287, 0);
@@ -528,12 +615,28 @@ void drawScoreboard() {
 	glRotatef(-45, 0, 0, 1);
 	glRotatef(rotateTetrahedron, 1, 1, 1);
 	glScalef(30, 30, 30);
-	glColor3f(1, 1, 1);
+	glColor3f(1, 0.5, 1);
 	glLineWidth(1.2f);
 	glutWireTetrahedron();
 	glPopMatrix();
 
+
+	sb.load();
+	
+	glPushMatrix();
 	//점수표시~
+	glColor3f(213, 161, 60);//금색
+	displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, sb[0].getName(), -180.f, 80.f);
+	displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, to_string(sb[0].getScore()), 110.f, 80.f);
+
+	glColor3f(163, 163, 163);//은색
+	displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, sb[1].getName(), -180.f, -10.f);
+	displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, to_string(sb[1].getScore()), 110.f, -10.f);
+
+	glColor3f(205, 127, 50); //동색
+	displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, sb[2].getName(), -180.f, -100.f);
+	displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, to_string(sb[2].getScore()), 110.f, -100.f);
+	glPopMatrix();
 }
 
 void drawOption() {
@@ -664,6 +767,8 @@ void inGameIdleFunc() {
 			PlaySound(TEXT("source/sound/clear.wav"), NULL, SND_FILENAME | SND_ASYNC);//SND_ASYNC: 재생하는동안 프로그렘 실행, SND_SYNC :재생하는 동안 프로그렘 정지
 		}
 
+		gameOver = loop.getGameOver() || loop2.getGameOver();
+
 		start_t = end_t;
 	}
 }
@@ -697,7 +802,11 @@ void display() {
 	glEnable(GL_LIGHTING);
 	light.draw();
 
-	if (gameStarted == false && optionBool == false && scoreboardBool == false) {
+	if (writeName) {
+		drawNamesave();
+		
+	}
+	else if (gameStarted == false && optionBool == false && scoreboardBool == false) {
 		glDisable(GL_LIGHTING);
 		glDisable(GL_DEPTH_TEST);
 		drawMenu();
@@ -711,6 +820,9 @@ void display() {
 		glDisable(GL_LIGHTING);
 		glDisable(GL_DEPTH_TEST);
 		drawScoreboard();
+	}
+	else if (gameOver) {
+		drawGameover();
 	}
 
 	else if (gameStarted == true) {

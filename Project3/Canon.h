@@ -53,7 +53,7 @@ private:
 	const float recoil[8] = { 0,-35.f,-50.f,-75.f,-60.f,-45.f, -30.f, -15.f };
 	const double PI = 3.1415926;
 	const float radius = 25.f;
-	const float shotVel = 7;
+	const float shotVel = 9;
 	const float windowRadius = sqrt(pow(boundaryX, 2) + pow(boundaryY, 2));
 
 };

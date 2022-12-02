@@ -1,0 +1,2 @@
+hanju 10
+dogeun 20
