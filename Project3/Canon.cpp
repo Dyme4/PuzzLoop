@@ -51,7 +51,7 @@ void Canon::createCanon() {
 			double posY = sin(directionAngle * PI / 180) * 2 * radius;
 			s.setCenter(posX, posY, 0);
 		}
-		
+
 		int randomColor = (rand() % 4);
 		s.setColorIdx(randomColor);
 		s.setMTL(mats[randomColor]);
@@ -70,7 +70,7 @@ void Canon::setCanonLoadCenter() {
 	double velY = sin(directionAngle * PI / 180);
 	for (Sphere& ball : sphereOnCanon) {
 		if (ball.getCanonLoadIdx() == AWAIT) {
-			ball.setVelocity(Vector3f(velX, velY, 0)*shotVel);
+			ball.setVelocity(Vector3f(velX, velY, 0) * shotVel);
 			ball.setCenter(velX * 2 * radius, velY * 2 * radius, 0);
 		}
 	}
@@ -78,7 +78,7 @@ void Canon::setCanonLoadCenter() {
 
 void Canon::moveLaunchSphere() {
 	Sphere& LaunchBall = sphereOnCanon[0];
-	LaunchBall.setCenter(LaunchBall.getCenter()+LaunchBall.getVelocity());
+	LaunchBall.setCenter(LaunchBall.getCenter() + LaunchBall.getVelocity());
 }
 void Canon::setCanonFired(bool Fired) {
 	canonFired = Fired;
@@ -107,25 +107,25 @@ void Canon::fire() {
 
 		}
 	}
-		srand(time(NULL));
-		Sphere s;
-		s.setRadius(radius);
-		s.setSlice(30);
-		s.setStack(30);	
-		s.setCanonLoadIdx(NEXT);
-		s.setCenter(0, 0, 0);
-		int randomColor;
+	srand(time(NULL));
+	Sphere s;
+	s.setRadius(radius);
+	s.setSlice(30);
+	s.setStack(30);
+	s.setCanonLoadIdx(NEXT);
+	s.setCenter(0, 0, 0);
+	int randomColor;
 
-		if (colorIndexVec.size() == 0) //0으로 나누기 예외
-			randomColor = 0;
-		else
-			randomColor = colorIndexVec[rand() % colorIndexVec.size()];
+	if (colorIndexVec.size() == 0) //
+		randomColor = 0;
+	else
+		randomColor = colorIndexVec[rand() % colorIndexVec.size()];
 
-		//int randomColor = rand() % 4;
-		s.setColorIdx(randomColor);
-		s.setMTL(mats[randomColor]);
-		sphereOnCanon.push_back(s);
-	
+	//int randomColor = rand() % 4;
+	s.setColorIdx(randomColor);
+	s.setMTL(mats[randomColor]);
+	sphereOnCanon.push_back(s);
+
 }
 
 float Canon::getVelX(int theta) const {
@@ -136,6 +136,14 @@ float Canon::getVelY(int theta) const {
 	float velY = sin((directionAngle + theta) * PI / 180);
 	return velY;
 }
+void Canon::updateRecoil() {
+	recoilVal++;
+	if (isCanonFired() == false) recoilVal = 0;
+}
+float Canon::getRecoil() const {
+	if (recoilVal < recoil_size) { return recoil[recoilVal] / 2; }
+	else return 0;
+}
 
 void Canon::setColorIndexVec(const vector<int>& v) { colorIndexVec = v; }
 
@@ -143,30 +151,33 @@ void Canon::setColorIndexVec(const vector<int>& v) { colorIndexVec = v; }
 void Canon::ReadyToFire() {
 	sphereOnCanon.erase(sphereOnCanon.begin());
 	setCanonFired(false);
+	recoilVal = 0;
 }
 
-Sphere &Canon::getSphere() {
+Sphere& Canon::getSphere() {
 	return sphereOnCanon[0];
 }
 
 void Canon::draw() const {
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 	for (const Sphere& ball : sphereOnCanon) {
 		ball.draw();
-	}	
-	
+	}
+
 	glDisable(GL_LIGHTING);
-	
+
 	glEnable(GL_LINE_STIPPLE);
 	glColor3f(0.7, 0.7, 0.7);
 	glLineStipple(5, 0xAAAA);
 	glLineWidth(2);
 
 	glBegin(GL_LINES);
-	
-	glVertex3f(0,0,0);
+
+	glVertex3f(0, 0, 0);
 	double velX = cos(directionAngle * PI / 180);
 	double velY = sin(directionAngle * PI / 180);
-	glVertex3f(velX * windowRadius, velY*windowRadius, 0);
+	glVertex3f(velX * windowRadius, velY * windowRadius, 0);
 	glEnd();
 	glDisable(GL_LINE_STIPPLE);
 

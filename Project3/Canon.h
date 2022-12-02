@@ -27,6 +27,9 @@ public:
 	float getVelX(int theta) const;
 	float getVelY(int theta) const;
 
+	void updateRecoil();
+	float getRecoil() const;
+
 	void fire();
 	void ReadyToFire();
 	void moveLaunchSphere();
@@ -38,6 +41,7 @@ public:
 	void setColorIndexVec(const vector<int>& v);
 
 private:
+	int recoilVal = 0;
 	vector<Sphere> sphereOnCanon;
 	bool canonFired = false;
 	int directionAngle = 0;
@@ -45,6 +49,8 @@ private:
 	vector<int> colorIndexVec;
 
 	//»ó¼ö
+	const int recoil_size = 8;
+	const float recoil[8] = { 0,-35.f,-50.f,-75.f,-60.f,-45.f, -30.f, -15.f };
 	const double PI = 3.1415926;
 	const float radius = 25.f;
 	const float shotVel = 7;

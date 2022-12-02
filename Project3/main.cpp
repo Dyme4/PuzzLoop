@@ -13,7 +13,7 @@ Light light(boundaryX, boundaryY, boundaryX / 2, GL_LIGHT0);
 Canon canon;
 Texture canonTexture;
 vector<Texture> menuTexture;
-Texture optionTexture, pauseTexture, pause_keyTexture, scoreboardTexture;
+Texture optionTexture, pauseTexture, pause_keyTexture, scoreboardTexture, allclearTexture;
 int menuIdx=0;
 Sound sound;
 
@@ -28,13 +28,15 @@ bool optionBool = false; //false면 메인메뉴, true면 옵션메뉴
 bool scoreboardBool = false; //true면 스코어보드
 bool gamePaused = false;//true면 pause창이 켜진 상태
 
-int stage = 1;//기본 1
+int stage = 1;//4스테이지는 클리어
 
 float rotateTetrahedron = 0;
 
 enum MENU { PLAY, OPTION, SCOREBOARD, EXIT } menu;
 enum OptionMENU { EASY, NORMAL, HARD, ON, OFF, BACK} optionmenu;
 enum PauseMENU { CONTINUE, MAINMENU } pausemenu;
+enum class clearMENU { MAINMENU, WRITE } clearmenu;
+
 float optionDifficultyPos[2] = {-197.5, -72};
 float optionMusicPos[2] = { 342.5f, -30.f };
 
@@ -108,15 +110,17 @@ void handleCollision2(Sphere& cannonSph, vector<Sphere>& loopSph) {
 }
 
 void drawCanonWithTexture() {
-	int imageWidth = 100;
+	int canonWidth = 100;
+	float movex = canon.getVelX(0) * canon.getRecoil(), movey = canon.getVelY(0) * canon.getRecoil();
+
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	glBindTexture(GL_TEXTURE_2D, canonTexture.getTextureID() );
+	glBindTexture(GL_TEXTURE_2D, canonTexture.getTextureID());
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 0.0f); glVertex2f(imageWidth * canon.getVelX(45), imageWidth * canon.getVelY(45));
-	glTexCoord2f(0.0f, 1.0f); glVertex2f(imageWidth * canon.getVelX(135), imageWidth * canon.getVelY(135));
-	glTexCoord2f(1.0f, 1.0f); glVertex2f(imageWidth * canon.getVelX(225), imageWidth * canon.getVelY(225));
-	glTexCoord2f(1.0f, 0.0f); glVertex2f(imageWidth * canon.getVelX(315), imageWidth * canon.getVelY(315));
+	glTexCoord2f(0.0f, 0.0f); glVertex2f(canonWidth * canon.getVelX(45) + movex, canonWidth * canon.getVelY(45) + movey);
+	glTexCoord2f(0.0f, 1.0f); glVertex2f(canonWidth * canon.getVelX(135) + movex, canonWidth * canon.getVelY(135) + movey);
+	glTexCoord2f(1.0f, 1.0f); glVertex2f(canonWidth * canon.getVelX(225) + movex, canonWidth * canon.getVelY(225) + movey);
+	glTexCoord2f(1.0f, 0.0f); glVertex2f(canonWidth * canon.getVelX(315) + movex, canonWidth * canon.getVelY(315) + movey);
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 }
@@ -190,6 +194,19 @@ void specialKeyboardDown(int key, int x, int y) {
 			break;
 		}
 	}
+	else if (stage == 4) {
+		switch (key) {
+		case GLUT_KEY_UP:
+		case GLUT_KEY_DOWN:
+			if (clearmenu == clearMENU::WRITE)
+				clearmenu = clearMENU::MAINMENU;
+			else
+				clearmenu = clearMENU::WRITE;
+			break;
+		default:
+			break;
+		}
+	}
 	else if (gameStarted == true && gamePaused == true) { //퍼즈
 		switch (key) {
 		case GLUT_KEY_UP:
@@ -240,7 +257,7 @@ void keyboardDown(unsigned char key, int x, int y) {
 			switch (optionmenu) {
 			case EASY: 
 				optionDifficultyPos[0] = -197.5f; optionDifficultyPos[1] = -12.f;
-				loop.setDifficulty(0.75f); loop2.setDifficulty(0.75f); //공 개수 0.75배
+				loop.setDifficulty(0.2f); loop2.setDifficulty(0.2f); //공 개수 0.75배
 				break;
 
 			case NORMAL:
@@ -303,9 +320,29 @@ void keyboardDown(unsigned char key, int x, int y) {
 		}
 		glutPostRedisplay();
 	}
-	
+	else if (stage == 4) {//All-Clear
+		switch (key) {
+		case ' ':
+
+			switch (clearmenu)
+			{
+			case clearMENU::WRITE:
+				//스코어보드 기록 시작
+				break;
+			case clearMENU::MAINMENU:
+				gameStarted = false;
+				gamePaused = false;
+				loop.createLoop(0);
+				loop2.createLoop(0);
+				break;
+			default:
+				break;
+			}
+			break;
+		}
+	}
 	//rotating Canon (q=CCW, w=CW)
-	else if (gameStarted == true && keyboardPause == false  && gamePaused == false) { //게임 중
+	else if (gameStarted == true && keyboardPause == false  && gamePaused == false && stage != 4) { //게임 중
 		int	add = 3;
 		switch (key) {
 		case 'q':
@@ -339,6 +376,7 @@ void keyboardDown(unsigned char key, int x, int y) {
 			break;
 		}
 	}
+
 	glutPostRedisplay();
 }
 
@@ -356,6 +394,7 @@ void initialize() {
 	pauseTexture.initializeTexture("source/pause.png");
 	pause_keyTexture.initializeTexture("source/pause_key.png");
 	scoreboardTexture.initializeTexture("source/scoreboard.png");
+	allclearTexture.initializeTexture("source/allclear.png");
 
 	menuTexture.reserve(299);
 	for (int i = 0; i < 299; ++i) {
@@ -404,6 +443,41 @@ void drawPause() {
 	glutWireTetrahedron();
 	glPopMatrix();
 
+}
+
+void drawAllclear() {
+	int imageWidth = 1200; int imageHeight = 800;
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glBindTexture(GL_TEXTURE_2D, allclearTexture.getTextureID());
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex2f(-imageWidth / 2, -imageHeight / 2);
+	glTexCoord2f(0.0f, 1.0f); glVertex2f(-imageWidth / 2, imageHeight / 2);
+	glTexCoord2f(1.0f, 1.0f); glVertex2f(imageWidth / 2, imageHeight / 2);
+	glTexCoord2f(1.0f, 0.0f); glVertex2f(imageWidth / 2, -imageHeight / 2);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+
+
+	glDisable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
+
+	glColor3f(1, 1, 1);
+	//커서
+	glPushMatrix();
+	glTranslatef(360, -287 + 92 * (int)clearmenu, 0);
+	glRotatef(180, 0, 1, 0);
+	glRotatef(45, 0, 1, 0);
+	glRotatef(-45, 0, 0, 1);
+	glRotatef(rotateTetrahedron, 1, 1, 1);
+	glScalef(30, 30, 30);
+	glColor3f(1, 1, 1);
+	glLineWidth(1.2f);
+	glutWireTetrahedron();
+	glPopMatrix();
+
+
+	displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, "Total Score : " + std::to_string(loop.getScore() + loop2.getScore()), -40.f, 0.f);
 }
 
 void drawMenu() {
@@ -561,6 +635,7 @@ void inGameIdleFunc() {
 			handleCollision2(canon.getSphere(), loop2.getSphereVector());
 
 			if (canon.boundaryDetection()) { canon.ReadyToFire(); }
+			canon.updateRecoil();
 		}
 		if (loop.getGameOver() != true && loop2.getGameOver() != true && stage != 4) {
 			loop2.moveSphere();
@@ -597,7 +672,7 @@ void inGameIdleFunc() {
 void idle() {
 	end_t = clock();
 
-	if (gameStarted == false || gamePaused == true)
+	if (gameStarted == false || gamePaused == true || stage == 4)
 		menuIdleFunc();
 	else if(gameStarted == true && gamePaused == false)
 		inGameIdleFunc();
@@ -639,33 +714,43 @@ void display() {
 	}
 
 	else if (gameStarted == true) {
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_LIGHTING);
-		canon.draw();
-		drawCanonWithTexture();
-		drawPauseKeyTexture();
+		
 		switch (stage)
 		{
 		case 1:
 			loop.draw();
+			canon.draw();
+			drawCanonWithTexture();
+			drawPauseKeyTexture();
+
+			glColor3f(1, 1, 1);
+			displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, "Score : " + std::to_string(loop.getScore() + loop2.getScore()), -20.f, -300.f);
 			break;
 		case 2:
 			loop.draw();
+			canon.draw();
+			drawCanonWithTexture();
+			drawPauseKeyTexture();
+
+			glColor3f(1, 1, 1);
+			displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, "Score : " + std::to_string(loop.getScore() + loop2.getScore()), -20.f, -300.f);
 			break;
 		case 3:
 			loop.draw();
 			loop2.draw();
+			canon.draw();
+			drawCanonWithTexture();
+			drawPauseKeyTexture();
+
+			glColor3f(1, 1, 1);
+			displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, "Score : " + std::to_string(loop.getScore() + loop2.getScore()), -20.f, -300.f);
 			break;
 		case 4:
-			glColor3f(1, 1, 1);
-			displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, "ALL CLEAR!" , -55.f,150);
+			drawAllclear();
 			break;
 		default:
 			break;
 		}
-
-		glColor3f(1, 1, 1);
-		displayCharacters(GLUT_BITMAP_TIMES_ROMAN_24, "Score : " + std::to_string(loop.getScore() + loop2.getScore()), -20.f, -300.f);
 	}
 
 	if (gamePaused == true) {
